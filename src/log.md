@@ -104,6 +104,51 @@
     - https://ja.wikipedia.org/wiki/コピーオンライト
 ## Channels
 
+- 全然tokio::spawnについて理解してなかった...
+    - 新しいAsync（非同期）なタスクを生成し，JoinHandleを返す
+    - 起動したタスクは他の非同期タスクと同時に実行される．
+    - 生成されたタスクは現在実行しているスレッドで実行されるとは限らず．他のスレッドで実行されることもある．
+
+    - また，起動したタスクが最後まで実行されるとは限らないことに注意
+    - ランタイム自体が終了すると，全てのタスクはドロップされる．
+
+- JoinHandleとは．．．
+    - タスクに入る（タスクの終了をまつ）ための所有許可？
+    - 
+
+
+
+
+- tokio のプリミティブチャネル
+    - **mpsc** : Multi-Producer, Single-Consumer channel
+        - bounded と unbounded の二つがある．
+        bounded はチャネルに保存できる値に制限があり，
+        unbounded　はチャネルの容量に制限はなく，Sendは常に即時完了する．また，UnboundedのSenderはsync,Asyncどちらでも使用可能．
+        チャネルが容量不足の場合，送信は拒否され，容量が空いた時に通知される．
+    - **oneshot** : single-producer, single consumer channel
+        対となるSenderとReceiverを生成する．
+    - **broadcast** : multi-producer, multi-consumer channel
+        - Senderは全てのreceiverに対して値を送る．
+        SenderはClone可能
+        送信と受信は同時に可能
+        値が送信されると，チャネルに値が保存され，全てのReceiverに通知される．その後各ReceiverにCloneされる．
+        全てのReceiverにCloneされると，受信した値が解放される．
+        新規Receiverを生成するにはsubcribe()を実行すれば良い．この時，Receiverは生成された後に送信された値を受信する．
+        送信された値は，全てのReceiverが受信するまで保持される．
+
+        保持するメッセージの量を制限することが可能．その場合，制限した値を超えると古い順に値は破棄される．
+        破棄された値を見ていない`ReceiverはRecvError::Lagged`を受信する．
+
+
+
+
+    - **watch** : single-producer, multi-consumer channel
+        - Lineとかのプッシュ通知を受け取るクライアント的な？
+
+
+
+
+
 
 ## I/O
 
