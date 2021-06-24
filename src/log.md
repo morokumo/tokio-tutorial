@@ -1,34 +1,26 @@
 # もろもろ
 
-
-
-
 ## Hello Tokio
 
-- 127.0.0.1:6379 はmini-redis-serverのアドレス
-- "".into()　&strをStringにコンバート
+* 127.0.0.1:6379 はmini-redis-serverのアドレス
+* "".into()　&strをStringにコンバート
 
-- async fn はFuture traitを実装した無名の型を返す
-- async fn は .awaitによって初めて実行される．
+* async fn はFuture traitを実装した無名の型を返す
+* async fn は .awaitによって初めて実行される．
 
 ## Spawining
 
-- 並行(Concurrency)と並列(Parallelism)の違い
+* 並行(Concurrency)と並列(Parallelism)の違い
     - Concurrency は交互に作業を行うこと　実際の例では，CPUが行う作業がCocurrencyに相当する（実際はParallelismも行うが）．作業者が多くいるわけではない(GPUと比べて)が，1人が行う作業の速度が早いため（CPUの周波数），交互に作業を行ってもそれが成り立つ．
     - Parallelism は２つ以上の作業者が同時に作業を行うこと　GPUではPrallelismであり，それは一つ一つのコアの処理性能が圧倒的に優れているわけではないが，コア(作業者)が多く(CPUと比べて)，同時に作業が行える．
 
-- ↑　わかりづらかったかも
+* ↑　わかりづらかったかも
     - 1人が複数の作業を行うのがConcurrencyで
     - 複数人で複数（もしくは一つを分割した作業）を同時に行うのがParallelismがわかりやすい？
 
-
-
-
 ## Shared state
 
-
-
-- Arcとは？
+* Arcとは？
     - Atomically Reference Counted　（原子的な参照カウント？）の略
     - **スレッドセーフな**参照カウントを使用したスマートポインタである．
     - ヒープ上に割り当てられた共有所有権を提供する
@@ -37,22 +29,15 @@
     - Rustの共有参照はデフォルトでは変更が許されない．したがって，変更の必要がある場合にはArc<Mutex<T>>などを利用する必要がある．Mutexの他にはRwLockやAtomicを使用することができる．
     - ちなみに，非同期で処理したい場合はArc<Mutex<T>>を用い，シングルスレッドの場合にはArc<RefCell<T>>が良い模様？　RefCellにはSyncではないため，さらにArcはスレッドセーフを保証するため，Rcに比べパフォーマスが低い
 
-
-
-- ところでスレッドセーフとは？？？
+* ところでスレッドセーフとは？？？
     - 端的にいえば複数のスレッドで同時に並行（Parallelism）で作業を行っても問題が発生しない，つまり安全であるということ．
 
-
-
-- Arcは良いけどRcって？
+* Arcは良いけどRcって？
     - Reference Counting （参照カウント）の略
     - スレッドセーフ**ではない**参照カウントを使用したスマートポインタである．
     - 基本的なことはArcと同じ?
 
-
-
-
-- 参照カウントって？
+* 参照カウントって？
     - メモリオブジェクトのライフサイクル（寿命）管理に使用される方式のひとつ
     - 要するにオブジェクトに対する参照（ポインタ）がいくつ存在するかのカウント
     - ただし，オブジェクトへの参照が変化するたびに値は変更される
@@ -61,50 +46,37 @@
         - 仕組みが単純である為，高速である．
         - 参照の破棄の検知が迅速に行われる為，メモリが少ない場合に於いては有用な場合がある．
         - 
+
     - cons
         -　
 
-
-
-- Mutexとはなんぞや
+* Mutexとはなんぞや
     - Mutual exclusion(相互排他)の略
     - Mutex<T>はスマートポインタである．厳密には.lock()がMutexGuardというスマートポインタを返却する．
     - Deref
     - Drop
-
-
 
     - アクセスは常に一つのスレッドに限定される
     - 次の二つのことを覚えておく必要がある．
         1. データを使用する前にロックの獲得を試みなければならない
         2. データをロックし，処理が終わった後，ロックを解除しなければならない
 
-- Derefとは
+* Derefとは
     - トレイト
     - 参照外し演算子`*`の振る舞いを変更することができる．
     - 
 
-
-- ところで　COW Copy-On-Writeって？
+* ところで　COW Copy-On-Writeって？
     - 最適化戦略の一種
     - 要するに，コピーを要求された時に，愚直にコピーを行った場合において，コピーされたもの（またはコピー元）に変更が加えられなかった場合，その処理自体（コピー）の意味がなくなってしまい，計算の無駄が生じてしまう．したがって，それを回避するために，コピー元の参照を取るようにし，見かけ上はコピーという振る舞いをみせ，実際に変更が加えられる際にコピーを行うことによって，無駄な計算を回避する最適化戦略である．
     - 
 
-
-- シャーディングってなに
+* シャーディングってなに
     - DBの負荷分散手法
 
-
-
-
-
-
-- References
-    - https://rustforbeginners.hatenablog.com/entry/arc-mutex-design-pattern
-    - https://ja.wikipedia.org/wiki/コピーオンライト
 ## Channels
 
-- 全然tokio::spawnについて理解してなかった...
+* 全然tokio::spawnについて理解してなかった...
     - 新しいAsync（非同期）なタスクを生成し，JoinHandleを返す
     - 起動したタスクは他の非同期タスクと同時に実行される．
     - 生成されたタスクは現在実行しているスレッドで実行されるとは限らず．他のスレッドで実行されることもある．
@@ -112,52 +84,114 @@
     - また，起動したタスクが最後まで実行されるとは限らないことに注意
     - ランタイム自体が終了すると，全てのタスクはドロップされる．
 
-- JoinHandleとは．．．
+* JoinHandleとは．．．
     - タスクに入る（タスクの終了をまつ）ための所有許可？
     - 
 
-
-
-
-- tokio のプリミティブチャネル
+* tokio のプリミティブチャネル
     - **mpsc** : Multi-Producer, Single-Consumer channel
         - bounded と unbounded の二つがある．
-        bounded はチャネルに保存できる値に制限があり，
-        unbounded　はチャネルの容量に制限はなく，Sendは常に即時完了する．また，UnboundedのSenderはsync,Asyncどちらでも使用可能．
-        チャネルが容量不足の場合，送信は拒否され，容量が空いた時に通知される．
+        - bounded はチャネルに保存できる値に制限があり，
+        - unbounded　はチャネルの容量に制限はなく，Sendは常に即時完了する．また，UnboundedのSenderはsync,Asyncどちらでも使用可能．
+        - チャネルが容量不足の場合，送信は拒否され，容量が空いた時に通知される．
     - **oneshot** : single-producer, single consumer channel
-        対となるSenderとReceiverを生成する．
+        - 対となるSenderとReceiverを生成する．
     - **broadcast** : multi-producer, multi-consumer channel
         - Senderは全てのreceiverに対して値を送る．
-        SenderはClone可能
-        送信と受信は同時に可能
-        値が送信されると，チャネルに値が保存され，全てのReceiverに通知される．その後各ReceiverにCloneされる．
-        全てのReceiverにCloneされると，受信した値が解放される．
-        新規Receiverを生成するにはsubcribe()を実行すれば良い．この時，Receiverは生成された後に送信された値を受信する．
-        送信された値は，全てのReceiverが受信するまで保持される．
+        - SenderはClone可能
+        - 送信と受信は同時に可能
+        - 値が送信されると，チャネルに値が保存され，全てのReceiverに通知される．その後各ReceiverにCloneされる．
+        - 全てのReceiverにCloneされると，受信した値が解放される．
+        - 新規Receiverを生成するにはsubcribe()を実行すれば良い．この時，Receiverは生成された後に送信された値を受信する．
+        - 送信された値は，全てのReceiverが受信するまで保持される．
 
-        保持するメッセージの量を制限することが可能．その場合，制限した値を超えると古い順に値は破棄される．
-        破棄された値を見ていない`ReceiverはRecvError::Lagged`を受信する．
-
-
-
+        - 保持するメッセージの量を制限することが可能．その場合，制限した値を超えると古い順に値は破棄される．
+        - 破棄された値を見ていない`ReceiverはRecvError::Lagged`を受信する．
 
     - **watch** : single-producer, multi-consumer channel
         - Lineとかのプッシュ通知を受け取るクライアント的な？
 
-
-
-
-
-
 ## I/O
 
-## Framing
+* AsyncRead と AsyncWrite
 
+## Framing
 
 ## Async in depth
 
 ## Select
 
-
 ## Streams
+
+## Others
+
+* `yields`の訳としては放棄するが適切？
+
+* tokio::taskについて
+    - 軽量かつ，ノンブロッキングな実行単位
+    - ここでのノンブロッキングとは，実行することによって，後続のプログラムが停滞しないということ？
+    タスクはOSが管理するスレッドとは異なり，tokioのランタイムによって管理される．
+    一般的に，このようなパターンをグリーンスレッドと呼ぶ
+    GoのGoroutines, Kotlinのcoroutines, Erlangのprocessと同類
+
+    - ポイントとしては以下の通り，
+
+        - 軽量
+        - Tokioのランタイムによって管理されるため，タスクの切り替え等にcontext switchが必要としない
+        - 故に，オーバーヘッドがかなり少なく，タスクの大量生成，破棄においてはOSのスレッドと比べ安価である．
+        - タスクは一般的にOSが実装しているpreemptive multitaskingではなくnon-preemptive multitaskingによって実現されている．
+            - したがって，タスクが放棄されるまで実行され，どちらかの状態になったら次のタスクが実行される．
+
+    - タスクが実行を続けられない場合はTokioランタイムがそのタスクを放棄し，別のタスクをスケジュールする．
+    - ブロック操作を実行するためのAPIがあるため，タスクは通常スレッドをブロックするような操作（System Call）などを行ってならない．
+
+* task::spawn
+    - AsyncブロックやFutureを受け取りタスクを作成する．
+
+* task::spawn_blocking
+    - ブロックする可能性のあるコードをタスクとして作成するためのAPI
+    ブロッキングタスク専用のスレッドプールにブロッキング関数を作成する．
+
+* task::block_in_place
+    - スレッド化されたランタイムを使用する場合に利用可能
+    基本的にはspawn_blockingと同じだが，こちらの場合は現在使用しているスレッドをブロッキングスレッドに移動させるため，Context Switchを回避でき，パフォーマンスの向上が見込める．
+
+* task::yield_now
+    - 現在のタスクを放棄し別のタスクをスケジューリングする．
+    - 放棄したタスクは最終的に実行する．
+    - 要するに現在やってるタスクをキューの最後に持ってく感じ？
+    
+
+* **Context Switch**とは？
+    - そもそもContextとは？
+        - OS？のタスク（プロセスやスレッドを含む）に使用されるデータの最小セット
+        - 例えばタスクAを中断して他のタスクBを行い，元のタスクAを再開するためには．タスクAの状態を保存して置く必要がある　そのために使用するのがContext   
+
+    - Context SwitchとはこのContextを保存したり，復元する過程のこと
+    - Contextのサイズが小さければ，小さいほどオーバーヘッドは少なくなる？
+
+* **Preemptive Multitasking**（非協調的マルチタスク）とは？
+    - マルチタスクにおいて，OSがCPUを**管理する**方式
+    - OSは実行中のタスクを停止することが可能．
+    - OSはタスクの停止と再開（Context Switch）を一定間隔で全てのタスクに対して行うことで，マルチタスク（**のような振る舞い**）を実現している．
+
+* **Non-Preemptive Multitasking**（協調的マルチタスク）とは？
+    - マルチタスクに置いてOSがCPUを**管理しない**方式
+
+    - CPUの制御の扱いはタスクに委ねられてしまうため，実行するタスクによってはOSに制御を返却しない（もしくは実行に失敗し返却できなくなる）ため，正常に動作しないことがある．
+
+## References
+
+* https://rustforbeginners.hatenablog.com/entry/arc-mutex-design-pattern
+* https://ja.wikipedia.org/wiki/コピーオンライト
+
+* https://tokio.rs/tokio/tutorial
+[2021/06/25]
+* https://zenn.dev/magurotuna/books/tokio-tutorial-ja
+[2021/06/25]
+* https://ja.wikipedia.org/wiki/コンテキスト_(情報工学)
+ [2021/06/25]
+* https://e-words.jp/w/プリエンプティブマルチタスク.html
+ [2021/06/25]
+* https://tech-blog.optim.co.jp/entry/2019/07/05/173000
+ [2021/06/25]
